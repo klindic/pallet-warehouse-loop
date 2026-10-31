@@ -72,6 +72,11 @@ const Q = new URLSearchParams(location.search);
 const BUILD = Q.get('build') === '0' ? 0 : 1.0;   // seconds of build-in
 const LOOP = 10;                                   // seconds per action cycle
 const FREEZE = Q.has('t') ? parseFloat(Q.get('t')) : null;
+// Phones/tablets get a lighter render profile (half-res AO, no MSAA, pixel ratio <= 2,
+// fewer shadow casters); every device also gets adaptive resolution to hold ~60 fps.
+// ?lite=1 / ?lite=0 forces the profile on or off.
+const MOBILE = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent));
+const LITE = Q.has('lite') ? Q.get('lite') !== '0' : MOBILE;
 
 /* ---------------- math helpers ---------------- */
 const TAU = Math.PI * 2, PI = Math.PI, HP = Math.PI / 2;
@@ -308,19 +313,24 @@ scene.add(sun, sun.target);
   scene.add(catcher);
 }
 
-const rt = new THREE.WebGLRenderTarget(2, 2, { type: THREE.HalfFloatType, samples: 4 });
+const rt = new THREE.WebGLRenderTarget(2, 2, { type: THREE.HalfFloatType, samples: LITE ? 0 : 4 });
 const composer = new EffectComposer(renderer, rt);
 composer.addPass(new RenderPass(scene, camera));
 const gtao = new GTAOPass(scene, camera, 2, 2);
 gtao.output = GTAOPass.OUTPUT.Default;
 gtao.blendIntensity = 1.0;
-gtao.updateGtaoMaterial({ radius: 2.4, distanceExponent: 1.6, thickness: 2.6, scale: 1.55, samples: 16, distanceFallOff: 1.0, screenSpaceRadius: false });
-gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 6, rings: 2, samples: 16 });
-gtao.normalMaterial.clippingPlanes = CLIP;
-{ // keep transparent shells (walls, roof, glass, sky) out of the AO g-buffer
-  const ov = gtao.overrideVisibility.bind(gtao);
-  gtao.overrideVisibility = function () { ov(); this.scene.traverse(o => { if (o.userData.noAO) o.visible = false; }); };
+gtao.updateGtaoMaterial({ radius: 2.4, distanceExponent: 1.6, thickness: 2.6, scale: 1.55, samples: LITE ? 8 : 16, distanceFallOff: 1.0, screenSpaceRadius: false });
+gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: LITE ? 4 : 6, rings: 2, samples: LITE ? 8 : 16 });
+{ // AO is soft, so on the lite profile it is computed at half resolution and upsampled
+  const AO_SCALE = LITE ? 0.5 : 1, ss = gtao.setSize.bind(gtao);
+  gtao.setSize = (w, h) => ss(Math.max(2, Math.round(w * AO_SCALE)), Math.max(2, Math.round(h * AO_SCALE)));
 }
+gtao.normalMaterial.clippingPlanes = CLIP;
+// keep transparent shells (walls, roof, glass, sky) out of the AO g-buffer — uses a cached
+// list instead of traversing the whole scene twice per frame
+const NOAO = [];
+gtao.overrideVisibility = function () { for (const o of NOAO) { o.userData._vis = o.visible; o.visible = false; } };
+gtao.restoreVisibility = function () { for (const o of NOAO) o.visible = o.userData._vis; };
 if (Q.get('ao') !== '0') composer.addPass(gtao);
 composer.addPass(new OutputPass());
 
@@ -328,12 +338,13 @@ function resize() {
   const r = stage.getBoundingClientRect();
   const w = Math.max(2, Math.round(r.width)), h = Math.max(2, Math.round(r.height));
   const q = parseFloat(Q.get('q') || '1');
-  const pr = Math.min(window.devicePixelRatio || 1, Math.max(1, 1920 / h)) * q;
+  const pr = Math.min(window.devicePixelRatio || 1, Math.max(1, 1920 / h), LITE ? 2 : 3) * q * DYN.scale;
   renderer.setPixelRatio(pr);
   renderer.setSize(w, h, false);
   composer.setPixelRatio(pr);
   composer.setSize(w, h);
 }
+const DYN = { scale: 1, last: 0, acc: 0, n: 0, good: 0, skip: 30 };
 addEventListener('resize', resize);
 
 /* =====================================================================
@@ -628,7 +639,7 @@ function buildInterior() {
   of.bb(1.2, 0.7, 0.9, M(0xdadedf, { r: 0.6 }), 1.3, FL + 3.36, -1.0, { r: 0.1 });
   const office = of.build();
   const fan = new Parts(); fan.box(0.62, 0.04, 0.12, an, 0, 0, 0, { r: 0.015 }); fan.box(0.12, 0.04, 0.62, an, 0, 0, 0, { r: 0.015 });
-  const fanG = fan.build(); fanG.position.set(1.3, FL + 4.08, -1.0); office.add(fanG); FAN = fanG;
+  const fanG = fan.build(); fanG.position.set(1.3, FL + 4.08, -1.0); office.add(fanG); FAN = fanG; fanG.userData.dyn = true;
   office.position.set(17.1, 0, -9.0);
   grp.add(unit(office, 0.42, 'pop', 0.4));
   // forklift charger + parked pallet jack
@@ -676,7 +687,7 @@ function makeBarrier(px, pz, dir) {
   const A = new Parts();
   for (let k = 0; k < 11; k++) A.box(0.52, 0.11, 0.09, M(k % 2 ? 0xd8392b : 0xf7f7f4, { r: 0.6 }), dir * (0.3 + k * 0.52), 0, 0, { r: 0.03 });
   arm.add(A.build());
-  arm.userData.dir = dir;
+  arm.userData.dir = dir; arm.userData.dyn = true;
   return { root, arm };
 }
 
@@ -731,7 +742,7 @@ function tree(x, z, d, opt = {}) { TREES.list.push({ x, z, d, h: opt.h ?? (1.3 +
 function buildTrees() {
   const n = TREES.list.length;
   const trunk = new THREE.InstancedMesh(RB(0.32, 1, 0.32, 0.1, 1).clone().translate(0, 0.5, 0), M(0xa07a58, { r: 0.9 }), n);
-  const crown = new THREE.InstancedMesh(RB(1, 1, 1, 0.5, 3), M(0xffffff, { r: 0.92 }), n * 2);
+  const crown = new THREE.InstancedMesh(RB(1, 1, 1, 0.5, LITE ? 2 : 3), M(0xffffff, { r: 0.92 }), n * 2);
   for (const im of [trunk, crown]) { im.castShadow = true; im.receiveShadow = true; im.frustumCulled = false; im.instanceMatrix.setUsage(THREE.DynamicDrawUsage); }
   let ci = 0;
   TREES.list.forEach((t, i) => {
@@ -966,7 +977,7 @@ function makeTruck(cab, opt = {}) {
       _q.setFromAxisAngle(_v2.set(0, 1, 0), HP); _m.compose(_v.set(x, DECK_H, z), _q, _s.set(1, 1, 1));
       base.setMatrixAt(i, _m); load.setMatrixAt(i, _m); load.setColorAt(i, _c.set(LOADS[Math.floor(lr() * LOADS.length)]));
     });
-    for (const im of [base, load]) { im.castShadow = true; im.receiveShadow = true; trailer.add(im); }
+    for (const im of [base, load]) { im.castShadow = !LITE; im.receiveShadow = true; trailer.add(im); }
     out.d2 = makePallet(C.blue); out.d2.position.set(-5.0, DECK_H, 0.625); out.d2.rotation.y = HP;
     out.d3 = makePallet(C.blue); out.d3.position.set(-5.85, DECK_H, 0.625); out.d3.rotation.y = HP;
     trailer.add(out.d2, out.d3);
@@ -1335,7 +1346,7 @@ scene.add(buildTown());
 scene.add(buildTrees());
 const barE = makeBarrier(40.35, 16.6, 1), barW = makeBarrier(-40.35, 16.6, -1);
 scene.add(unit(barE.root, 0.5, 'pop', 0.35), unit(barW.root, 0.5, 'pop', 0.35));
-for (const ip of [ipBase, ...ipLoad]) { ip.finish(); scene.add(ip.mesh); }
+for (const ip of [ipBase, ...ipLoad]) { ip.finish(); if (LITE) ip.mesh.castShadow = false; scene.add(ip.mesh); }
 
 // flags: Croatian tricolour + company flag, built from waving slices
 function makeFlag(px, pz, rows) {
@@ -1550,24 +1561,103 @@ function updateCamera(cc) {
 
 
 /* ---------------- main loop ---------------- */
+let frozen = false;
+const MERGE = { queue: [] };
+function freezeStatics() { // after the build-in, static units never move again: stop recomposing their matrices
+  for (const u of UNITS) u.traverse(o => { if (!o.userData.dyn) { o.updateMatrix(); o.matrixAutoUpdate = false; } });
+  scene.updateMatrixWorld();
+  // then batch all static scenery into a few big meshes (per material), ~150k vertices per
+  // chunk, one chunk per frame so there is no visible hitch
+  const groups = new Map();
+  for (const u of UNITS) u.traverse(o => {
+    if (!o.isMesh || o.isInstancedMesh || !o.visible || o.geometry.index || o.geometry.attributes.position.isInterleavedBufferAttribute) return;
+    for (let q = o; q; q = q.parent) if (q.userData.dyn) return;
+    const g = o.geometry;
+    const key = [o.material.uuid, o.castShadow, o.receiveShadow, !!o.userData.noAO, !!g.attributes.color].join('|');
+    let e = groups.get(key); if (!e) groups.set(key, (e = [])); e.push(o);
+  });
+  for (const list of groups.values()) {
+    let cur = [], n = 0;
+    for (const m of list) {
+      const c = m.geometry.attributes.position.count;
+      if (n + c > 60000 && cur.length) { MERGE.queue.push(cur); cur = []; n = 0; }
+      cur.push(m); n += c;
+    }
+    if (cur.length > 1) MERGE.queue.push(cur);
+  }
+  frozen = true;
+}
+const _nm = new THREE.Matrix3();
+function stepMerge() { // transforms straight into preallocated arrays: no per-mesh clones
+  const chunk = MERGE.queue.shift(); if (!chunk) return;
+  let n = 0; for (const m of chunk) n += m.geometry.attributes.position.count;
+  const hasCol = !!chunk[0].geometry.attributes.color;
+  const P = new Float32Array(n * 3), N = new Float32Array(n * 3), Cl = hasCol ? new Float32Array(n * 3) : null;
+  let o = 0;
+  for (const m of chunk) {
+    const g = m.geometry, pa = g.attributes.position.array, na = g.attributes.normal.array, cnt = g.attributes.position.count;
+    const e = m.matrixWorld.elements, ne = _nm.getNormalMatrix(m.matrixWorld).elements;
+    if (hasCol) Cl.set(g.attributes.color.array, o);
+    for (let i = 0, j = 0; i < cnt; i++, j += 3, o += 3) {
+      const x = pa[j], y = pa[j + 1], z = pa[j + 2], a = na[j], b = na[j + 1], c = na[j + 2];
+      P[o] = e[0] * x + e[4] * y + e[8] * z + e[12];
+      P[o + 1] = e[1] * x + e[5] * y + e[9] * z + e[13];
+      P[o + 2] = e[2] * x + e[6] * y + e[10] * z + e[14];
+      const nx = ne[0] * a + ne[3] * b + ne[6] * c, ny = ne[1] * a + ne[4] * b + ne[7] * c, nz = ne[2] * a + ne[5] * b + ne[8] * c;
+      const l = 1 / (Math.sqrt(nx * nx + ny * ny + nz * nz) || 1);
+      N[o] = nx * l; N[o + 1] = ny * l; N[o + 2] = nz * l;
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(P, 3));
+  geo.setAttribute('normal', new THREE.BufferAttribute(N, 3));
+  if (hasCol) geo.setAttribute('color', new THREE.BufferAttribute(Cl, 3));
+  geo.computeBoundingSphere();
+  const mesh = new THREE.Mesh(geo, chunk[0].material);
+  mesh.castShadow = chunk[0].castShadow; mesh.receiveShadow = chunk[0].receiveShadow;
+  if (chunk[0].userData.noAO) { mesh.userData.noAO = true; NOAO.push(mesh); }
+  mesh.matrixAutoUpdate = false;
+  scene.add(mesh);
+  for (const m of chunk) { m.visible = false; m.geometry.dispose(); }
+}
+scene.matrixWorldAutoUpdate = false;   // updated once per frame below (not once per render pass)
 function renderAt(T) {
   const c = T < BUILD ? 0 : mod(T - BUILD, LOOP);
-  updateUnits(T);
-  for (const ip of [ipBase, ...ipLoad]) ip.update(T);
+  if (!frozen) {
+    updateUnits(T);
+    for (const ip of [ipBase, ...ipLoad]) ip.update(T);
+    if (T > BUILD + 0.6 && !Q.has('manual')) freezeStatics();
+  } else if (MERGE.queue.length) stepMerge();
   updateWorld(T, c);
   updateCamera(T - BUILD);
+  scene.updateMatrixWorld();
   composer.render();
 }
+scene.traverse(o => { if (o.userData.noAO) NOAO.push(o); });
 resize();
 let t0 = null;
+// adaptive resolution: if frames take longer than ~19 ms on average, render fewer pixels;
+// climb back up when there is headroom (hysteresis avoids flip-flopping)
+function adapt(now, T) {
+  const dt = now - DYN.last; DYN.last = now;
+  if (FREEZE !== null || T < BUILD + 0.8 || document.hidden || dt <= 0 || dt > 500) return;
+  if (DYN.skip > 0) { DYN.skip--; return; }
+  DYN.acc += dt; DYN.n++;
+  if (DYN.n < 40) return;
+  const avg = DYN.acc / DYN.n; DYN.acc = 0; DYN.n = 0;
+  if (avg > 19 && DYN.scale > 0.6) { DYN.scale = Math.max(0.6, DYN.scale * 0.85); DYN.good = 0; DYN.skip = 20; resize(); }
+  else if (avg < 14.5 && DYN.scale < 1) { if (++DYN.good >= 4) { DYN.scale = Math.min(1, DYN.scale / 0.9); DYN.good = 0; DYN.skip = 20; resize(); } }
+  else DYN.good = 0;
+}
 function frame(now) {
   if (t0 === null) t0 = now;
   const T = FREEZE !== null ? BUILD + LOOP + FREEZE : (now - t0) / 1000 + (BUILD === 0 ? 0.0001 : 0);
   renderAt(T);
+  adapt(now, T);
   requestAnimationFrame(frame);
 }
 // debug / capture hooks
-window.__wh = { renderer, composer, scene, fleet, renderAt, TK, PX, PZ, PY1, PY2, SCHED_OK, truckState, trackPose, FT, KT, TRAFFIC, trafficPose, RX, RZ, RY, BUILD, CAM, camera, gtao };
+window.__wh = { LITE, DYN, NOAO, MERGE, freezeStatics, stepMerge, renderer, composer, scene, fleet, renderAt, TK, PX, PZ, PY1, PY2, SCHED_OK, truckState, trackPose, FT, KT, TRAFFIC, trafficPose, RX, RZ, RY, BUILD, CAM, camera, gtao };
 if (!Q.has('manual')) requestAnimationFrame(frame);
 </script>
 </body>

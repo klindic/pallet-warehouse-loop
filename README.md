@@ -36,7 +36,17 @@ animation of a busy pallet warehouse on the edge of Sisak, framed for a vertical
 | `?q=0.5` | render-resolution factor (lower = faster) |
 | `?ao=0` | disable the GTAO pass |
 | `?pins=0` | hide the floating map pins |
+| `?lite=1` / `?lite=0` | force the lighter mobile render profile on/off (auto on phones and tablets) |
 | `?manual` | don't auto-play; drive frames with `window.__wh.renderAt(T)` |
+
+## Performance
+
+- Phones and tablets get a lighter profile: pixel ratio capped at 2, no MSAA, AO at half
+  resolution with half the samples, and fewer shadow casters.
+- Every device gets adaptive resolution: if frames average over ~19 ms, the render
+  resolution steps down (to 60 % at most) and climbs back when there is headroom.
+- After the build-in, all static scenery is frozen and merged into a few large meshes,
+  a little per frame so there is no hitch. That cuts draw calls by about a third.
 
 ## Recording the loop
 
