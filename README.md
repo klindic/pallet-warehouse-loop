@@ -9,8 +9,11 @@ animation of a busy pallet warehouse on the edge of Sisak, framed for a vertical
 ## What's in it
 
 - Three.js r170 from jsDelivr via an import map. Every block is a `RoundedBoxGeometry`
-  with `MeshStandardMaterial`. One sun with soft PCF shadows plus a hemisphere light,
+  with `MeshStandardMaterial`. One sun with soft, light PCF shadows plus a hemisphere light,
   ACES tone mapping and a GTAO ambient-occlusion pass. No image textures and no 3D text.
+- High-key "toy diorama" look: a white world with chunky rounded models, royal/navy blue
+  accents, solar panels on the hall roof, lollipop trees, red-roof houses and bobbing
+  map pins. Animation only; there is no on-screen UI.
 - The diorama builds itself in the first second: slab, hall, racks, pallets level by
   level, then trees, houses and vehicles pop in.
 - After that a 10 s action cycle loops seamlessly:
@@ -23,7 +26,6 @@ animation of a busy pallet warehouse on the edge of Sisak, framed for a vertical
   - Cars pass on the street, the gate barriers lift, flags wave and the beacon turns.
 - Five identical fleet trucks run one 50 s circuit, spaced 10 s apart. That way every
   truck, the forklift and every pallet are back in their starting positions at t = 10 s.
-- Overlay: a frosted-glass card with three counters in Croatian number formatting.
 
 ## URL parameters
 
@@ -33,6 +35,7 @@ animation of a busy pallet warehouse on the edge of Sisak, framed for a vertical
 | `?t=4.2` | freeze at a given cycle time (seconds) |
 | `?q=0.5` | render-resolution factor (lower = faster) |
 | `?ao=0` | disable the GTAO pass |
+| `?pins=0` | hide the floating map pins |
 | `?manual` | don't auto-play; drive frames with `window.__wh.renderAt(T)` |
 
 ## Recording the loop

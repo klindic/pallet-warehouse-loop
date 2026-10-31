@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#dfe3de" />
+<meta name="theme-color" content="#eef1f4" />
 <title>PaletLab · Skladište Sisak</title>
 <style>
   :root {
@@ -18,7 +18,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: #dde1dc;
+    background: #eef1f4;
   }
   body {
     display: flex;
@@ -35,98 +35,15 @@
     height: min(100vh, 177.7778vw);
     overflow: hidden;
     container-type: size;
-    background: linear-gradient(#f4f4f0, #dfe4df);
+    background: linear-gradient(#e3ecf4, #f4f6f8 45%, #eef1f4);
   }
   #gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
-  .card {
-    position: absolute;
-    left: 5.4cqw;
-    right: 5.4cqw;
-    top: 3.6cqh;
-    padding: 3.6cqw 4.6cqw 3.9cqw;
-    border-radius: 4.8cqw;
-    background: linear-gradient(140deg, rgba(255, 255, 255, 0.66), rgba(255, 255, 255, 0.30));
-    -webkit-backdrop-filter: blur(2.4cqw) saturate(1.45);
-    backdrop-filter: blur(2.4cqw) saturate(1.45);
-    border: 0.22cqw solid rgba(255, 255, 255, 0.75);
-    box-shadow: 0 2.6cqw 7cqw rgba(28, 35, 38, 0.16), inset 0 0.2cqw 0 rgba(255, 255, 255, 0.85);
-    opacity: 0;
-    will-change: transform, opacity;
-  }
-  .head { display: flex; align-items: center; gap: 2.4cqw; }
-  .logo {
-    width: 6.6cqw; height: 6.6cqw; flex: none;
-    border-radius: 2cqw;
-    background: var(--anth);
-    display: grid; align-content: center; justify-items: center; gap: 0.7cqw;
-    box-shadow: 0 0.8cqw 2cqw rgba(28, 35, 38, 0.25);
-  }
-  .logo i { display: block; height: 1.15cqw; border-radius: 0.4cqw; }
-  .logo i:nth-child(1) { width: 3.2cqw; background: var(--yellow); }
-  .logo i:nth-child(2) { width: 4.2cqw; background: var(--orange); }
-  .logo i:nth-child(3) { width: 4.2cqw; background: var(--blue); }
-  .title { font-size: 4.1cqw; font-weight: 750; letter-spacing: -0.02em; line-height: 1.1; white-space: nowrap; }
-  .title .sep { color: var(--orange); padding: 0 0.6cqw; }
-  .title small { display: block; font-size: 2.35cqw; font-weight: 550; letter-spacing: 0.02em; color: rgba(28, 35, 38, 0.55); margin-top: 0.5cqw; }
-  .live {
-    margin-left: auto; flex: none;
-    display: flex; align-items: center; gap: 1.2cqw;
-    font-size: 2.35cqw; font-weight: 750; letter-spacing: 0.14em;
-    padding: 1.1cqw 2cqw;
-    border-radius: 99cqw;
-    background: rgba(28, 35, 38, 0.86);
-    color: #fff;
-  }
-  .live b { width: 1.5cqw; height: 1.5cqw; border-radius: 50%; background: var(--yellow); box-shadow: 0 0 0 0.6cqw rgba(242, 183, 5, 0.25); }
-
-  .stat .lbl {
-    font-size: 2.35cqw; font-weight: 650; letter-spacing: 0.1em; text-transform: uppercase;
-    color: rgba(28, 35, 38, 0.58);
-  }
-  .stat .val {
-    font-weight: 800; letter-spacing: -0.035em; line-height: 1;
-    font-variant-numeric: tabular-nums;
-    margin-top: 0.9cqw;
-    display: inline-block;
-    transform-origin: left center;
-  }
-  .stat.big { margin-top: 3.2cqw; }
-  .stat.big .val { font-size: 8.6cqw; }
-  .stat.big .den { color: rgba(28, 35, 38, 0.36); font-weight: 700; }
-  .bar {
-    position: relative; height: 1.25cqw; margin-top: 2cqw; border-radius: 99cqw;
-    background: rgba(28, 35, 38, 0.1); overflow: hidden;
-  }
-  .bar i {
-    position: absolute; inset: 0 auto 0 0; width: 78%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, var(--blue), #4f8fd6 70%, var(--yellow));
-  }
-  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 4cqw; margin-top: 2.8cqw; padding-top: 2.6cqw; border-top: 0.2cqw solid rgba(28, 35, 38, 0.1); }
-  .row .val { font-size: 6.4cqw; }
-  .row .val .eur { color: var(--orange); }
 </style>
 </head>
 <body>
 <div id="stage">
   <canvas id="gl"></canvas>
-  <div class="card" id="card">
-    <div class="head">
-      <div class="logo" aria-hidden="true"><i></i><i></i><i></i></div>
-      <div class="title">PaletLab<span class="sep">·</span>Skladište Sisak<small>Logistički centar · Sisak, HR</small></div>
-      <div class="live"><b id="liveDot"></b>UŽIVO</div>
-    </div>
-    <div class="stat big">
-      <div class="lbl">Palete na skladištu</div>
-      <div class="val" id="vPal">1.180<span class="den"> / 1.512</span></div>
-      <div class="bar"><i id="bar"></i></div>
-    </div>
-    <div class="row">
-      <div class="stat"><div class="lbl">Šleperi danas</div><div class="val" id="vTr">0</div></div>
-      <div class="stat"><div class="lbl">Prihod danas</div><div class="val" id="vRev">0 <span class="eur">€</span></div></div>
-    </div>
-  </div>
 </div>
 
 <script type="importmap">
@@ -183,30 +100,31 @@ const rand = rng(1512);
 const pick = arr => arr[Math.floor(rand() * arr.length)];
 
 /* ---------------- palette ---------------- */
+// high-key "toy diorama" palette: white world, royal/navy blue accents, a few warm pops
 const C = {
-  ground: 0xedefec, slab: 0xd3d6d0, yard: 0xd4d7d2, hallFloor: 0xe7e8e3, apron: 0xdddfd9,
-  street: 0xa3a9a6, curb: 0xcfd1cb, walk: 0xe3e4de, line: 0xfbfbf8,
-  grass: 0xa9d38f, grass2: 0x9dcb84, grass3: 0xb6db9d,
-  blue: 0x2f6db3, orange: 0xd4651c, anth: 0x1c2326, yellow: 0xf2b705,
-  sheet: 0xaeb7bc, rib: 0x86919a, steel: 0x4d5a62, concrete: 0xcbccc5,
-  wood: 0xcf9f62, wood2: 0xb48550, tyre: 0x23292c, skin: 0xe6b48f,
-  white: 0xf5f5f2, kraft: 0xd6b888, glass: 0x2b3b45, vest: 0xf07c18,
+  ground: 0xeef0f2, slab: 0xdfe3e8, yard: 0xe2e5e9, hallFloor: 0xf4f5f6, apron: 0xe9ebee,
+  street: 0xcdd2d8, curb: 0xffffff, walk: 0xf6f7f8, line: 0xffffff,
+  grass: 0xc3e2ad, grass2: 0xb8dca2, grass3: 0xcde7bc,
+  blue: 0x2f6db3, navy: 0x233a8b, orange: 0xd4651c, anth: 0x1c2326, yellow: 0xf2b705, red: 0xe0533f,
+  sheet: 0xe8edf1, rib: 0xcbd3da, steel: 0xdfe4e9, concrete: 0xf4f5f6,
+  wood: 0xdfbb88, wood2: 0xcca46f, tyre: 0x2b3137, skin: 0xefc29f,
+  white: 0xfbfbfb, kraft: 0xe7d0a7, glass: 0x22305e, vest: 0xf07c18,
 };
-const LOADS = [C.blue, C.blue, C.blue, C.orange, C.orange, 0xf3f2ee, 0xf3f2ee, C.kraft, C.kraft, 0x5b7fa8, C.anth];
+const LOADS = [C.blue, C.blue, C.navy, 0xf8f8f8, 0xf8f8f8, 0xf8f8f8, C.orange, C.kraft, C.kraft, 0x8fb4de];
 
 /* ---------------- renderer / scene ---------------- */
 const stage = document.getElementById('stage');
 const canvas = document.getElementById('gl');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance', preserveDrawingBuffer: Q.has('shot') });
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFShadowMap;   // PCF + radius = soft, blurred edges
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.02;
+renderer.toneMappingExposure = 1.1;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.localClippingEnabled = true;
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(24, 9 / 16, 40, 3200);
+const camera = new THREE.PerspectiveCamera(30, 9 / 16, 20, 3200);
 
 // Vehicles driving off the street are sliced cleanly at the slab edge.
 const EDGE = 58;
@@ -251,7 +169,7 @@ const _v = new THREE.Vector3(), _v2 = new THREE.Vector3(), _s = new THREE.Vector
 class Parts {
   constructor() { this.map = new Map(); }
   box(w, h, d, mat, x, y, z, o = {}) {
-    const r = o.r ?? Math.min(0.07, Math.min(w, h, d) * 0.3);
+    const r = o.r ?? Math.min(0.1, Math.min(w, h, d) * 0.33);
     const g = RB(w, h, d, r, o.seg ?? 1).clone();
     _e.set(o.rx || 0, o.ry || 0, o.rz || 0, o.order || 'XYZ');
     _q.setFromEuler(_e); _v.set(x, y, z); _s.set(1, 1, 1);
@@ -359,20 +277,22 @@ class PopInst {
 /* =====================================================================
    LIGHTS, SKY, POST
    ===================================================================== */
-scene.add(new THREE.HemisphereLight(0xf5f2ea, 0xaebba8, 1.05));
-const sun = new THREE.DirectionalLight(0xfff0dc, 3.05);
+scene.add(new THREE.HemisphereLight(0xffffff, 0xd3dae2, 1.9));
+const sun = new THREE.DirectionalLight(0xfff6ec, 2.35);
 sun.position.set(-64, 120, 76);
 sun.target.position.set(0, 0, -6);
 sun.castShadow = true;
-sun.shadow.mapSize.set(4096, 4096);
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.radius = 4.5;
+sun.shadow.intensity = 0.58;
 Object.assign(sun.shadow.camera, { left: -86, right: 86, top: 86, bottom: -86, near: 30, far: 420 });
-sun.shadow.bias = -0.0003;
+sun.shadow.bias = -0.0006;
 sun.shadow.normalBias = 0.04;
 scene.add(sun, sun.target);
 
 { // vertex-coloured sky dome (no textures)
   const R = 2200, g = new THREE.SphereGeometry(R, 40, 24), pos = g.attributes.position, col = [];
-  const top = new THREE.Color(0xffffff).multiplyScalar(1.45), mid = new THREE.Color(0xf1f3ef).multiplyScalar(1.22), bot = new THREE.Color(0xdbe1dc).multiplyScalar(1.1);
+  const top = new THREE.Color(0xcfe0f0).multiplyScalar(1.25), mid = new THREE.Color(0xf4f7fa).multiplyScalar(1.28), bot = new THREE.Color(0xe7ebef).multiplyScalar(1.15);
   for (let i = 0; i < pos.count; i++) {
     const y = pos.getY(i) / R;
     const c = y > 0 ? mid.clone().lerp(top, Math.pow(y, 0.8)) : mid.clone().lerp(bot, Math.pow(-y, 0.5));
@@ -383,7 +303,7 @@ scene.add(sun, sun.target);
   sky.userData.noAO = true;
   scene.add(sky);
   // soft shadow of the floating slab on the void below
-  const catcher = new THREE.Mesh(new THREE.PlaneGeometry(320, 320), new THREE.ShadowMaterial({ opacity: 0.16, color: 0x1c2326 }));
+  const catcher = new THREE.Mesh(new THREE.PlaneGeometry(320, 320), new THREE.ShadowMaterial({ opacity: 0.1, color: 0x233a8b }));
   catcher.rotation.x = -HP; catcher.position.set(0, -13, -3); catcher.receiveShadow = true; catcher.userData.noAO = true;
   scene.add(catcher);
 }
@@ -394,7 +314,7 @@ composer.addPass(new RenderPass(scene, camera));
 const gtao = new GTAOPass(scene, camera, 2, 2);
 gtao.output = GTAOPass.OUTPUT.Default;
 gtao.blendIntensity = 1.0;
-gtao.updateGtaoMaterial({ radius: 1.6, distanceExponent: 1.4, thickness: 2.2, scale: 1.25, samples: 16, distanceFallOff: 1.0, screenSpaceRadius: false });
+gtao.updateGtaoMaterial({ radius: 2.4, distanceExponent: 1.6, thickness: 2.6, scale: 1.55, samples: 16, distanceFallOff: 1.0, screenSpaceRadius: false });
 gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 6, rings: 2, samples: 16 });
 gtao.normalMaterial.clippingPlanes = CLIP;
 { // keep transparent shells (walls, roof, glass, sky) out of the AO g-buffer
@@ -524,8 +444,8 @@ function buildGround() {
 function buildHall() {
   const { x0, x1, z0, z1, h } = HALL;
   const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, W = x1 - x0, D = z1 - z0;
-  const conc = M(C.concrete, { r: 0.92 }), anth = M(C.anth, { r: 0.6 }), steel = M(C.steel, { r: 0.55, m: 0.2 });
-  const wall = M(C.sheet, { op: 0.2, r: 0.5 }), rib = M(C.rib, { op: 0.32, r: 0.5 }), roofM = M(0xc2c9cd, { op: 0.16, r: 0.5 }), roofRib = M(0x9aa4ab, { op: 0.26, r: 0.5 });
+  const conc = M(C.concrete, { r: 0.92 }), anth = M(C.navy, { r: 0.5 }), wht = M(C.white, { r: 0.6 }), steel = M(C.steel, { r: 0.6 });
+  const wall = M(C.sheet, { op: 0.2, r: 0.4 }), rib = M(C.rib, { op: 0.3, r: 0.4 }), roofM = M(0xf1f4f7, { op: 0.16, r: 0.4 }), roofRib = M(0xd3dae1, { op: 0.28, r: 0.4 });
   const PH = 0.75; // plinth height
 
   // plinth + trims
@@ -570,11 +490,15 @@ function buildHall() {
     wl.box(0.09, wh, 0.07, rib, x1 + 0.09, wy, z, { r: 0.02 });
   }
   // anthracite corner trims, door frame, canopy, blue sign band
-  for (const [x, z] of [[x0, z0], [x1, z0], [x0, z1], [x1, z1]]) wl.bb(0.36, h + 0.1, 0.36, anth, x, 0, z, { r: 0.06 });
+  for (const [x, z] of [[x0, z0], [x1, z0], [x0, z1], [x1, z1]]) wl.bb(0.5, h + 0.1, 0.5, wht, x, 0, z, { r: 0.18, seg: 2 });
+  // navy band under the coping (the hall's accent stripe)
+  wl.box(W + 0.3, 0.42, 0.1, anth, cx, h - 0.42, z1 + 0.13, { r: 0.04 }); wl.box(W + 0.3, 0.42, 0.1, anth, cx, h - 0.42, z0 - 0.13, { r: 0.04 });
+  wl.box(0.1, 0.42, D + 0.3, anth, x0 - 0.13, h - 0.42, cz, { r: 0.04 }); wl.box(0.1, 0.42, D + 0.3, anth, x1 + 0.13, h - 0.42, cz, { r: 0.04 });
   wl.bb(0.26, DOOR.h, 0.34, anth, DOOR.x0 - 0.13, FL, z1, { r: 0.04 });
   wl.bb(0.26, DOOR.h, 0.34, anth, DOOR.x1 + 0.13, FL, z1, { r: 0.04 });
   wl.box(DOOR.x1 - DOOR.x0 + 0.52, 0.32, 0.36, anth, (DOOR.x0 + DOOR.x1) / 2, DOOR.h + 0.16, z1, { r: 0.05 });
-  wl.box(7.6, 0.16, 1.7, anth, -1, 6.55, z1 + 0.85, { r: 0.05 });
+  wl.box(7.6, 0.3, 1.8, wht, -1, 6.6, z1 + 0.9, { r: 0.12, seg: 2 });
+  wl.box(7.62, 0.1, 0.06, anth, -1, 6.6, z1 + 1.8, { r: 0.03 });
   for (const x of [-4.3, 2.3]) wl.box(0.06, 0.06, 2.4, anth, x, 7.3, z1 + 0.7, { rx: 0.62 });
   wl.box(13, 1.5, 0.12, M(C.blue, { r: 0.6 }), 11.5, 7.55, z1 + 0.12, { r: 0.05 });
   wl.box(13, 0.18, 0.13, M(C.orange, { r: 0.6 }), 11.5, 6.7, z1 + 0.12, { r: 0.04 });
@@ -594,10 +518,17 @@ function buildHall() {
   const rf = new Parts();
   rf.box(W, 0.12, D, roofM, cx, h, cz, { r: 0.04 });
   for (let x = x0 + 0.75; x < x1; x += 1.5) rf.box(0.08, 0.09, D, roofRib, x, h + 0.1, cz, { r: 0.02 });
-  rf.box(W + 0.5, 0.42, 0.48, anth, cx, h + 0.12, z0, { r: 0.07 });
-  rf.box(W + 0.5, 0.42, 0.48, anth, cx, h + 0.12, z1, { r: 0.07 });
-  rf.box(0.48, 0.42, D, anth, x0, h + 0.12, cz, { r: 0.07 });
-  rf.box(0.48, 0.42, D, anth, x1, h + 0.12, cz, { r: 0.07 });
+  rf.box(W + 0.7, 0.6, 0.7, wht, cx, h + 0.15, z0, { r: 0.22, seg: 2 });
+  rf.box(W + 0.7, 0.6, 0.7, wht, cx, h + 0.15, z1, { r: 0.22, seg: 2 });
+  rf.box(0.7, 0.6, D, wht, x0, h + 0.15, cz, { r: 0.22, seg: 2 });
+  rf.box(0.7, 0.6, D, wht, x1, h + 0.15, cz, { r: 0.22, seg: 2 });
+  // solar panels along the back of the roof
+  for (let k = 0; k < 6; k++) {
+    const px = -34.6 + k * 9.0;
+    rf.box(8.3, 0.16, 3.7, wht, px, h + 0.3, -30.1, { r: 0.07 });
+    rf.box(8.0, 0.1, 3.4, M(0x24376f, { r: 0.35, m: 0.15 }), px, h + 0.41, -30.1, { r: 0.04 });
+    for (let j = 1; j < 4; j++) rf.box(0.05, 0.11, 3.36, M(0x7d8fc4, { r: 0.4 }), px - 4 + j * 2, h + 0.42, -30.1, { r: 0.02 });
+  }
   for (const [x, z] of [[-30, -24], [-12, -15], [6, -27]]) rf.bb(1.4, 0.5, 1.0, M(0xd7dbdd, { r: 0.6 }), x, h + 0.06, z, { r: 0.1 }); // roof vents
   const gRoof = unit(rf.build(), 0.42, 'rise', 0.42, 8);
 
@@ -690,7 +621,7 @@ function buildInterior() {
   // small white office box
   const of = new Parts(), wh = M(0xf6f6f3, { r: 0.75 }), gl = M(0x2e4350, { r: 0.2, m: 0.1 }), an = M(C.anth, { r: 0.6 });
   of.bb(5, 3.2, 4.8, wh, 0, FL, 0, { r: 0.12, seg: 2 });
-  of.bb(5.3, 0.16, 5.1, an, 0, FL + 3.2, 0, { r: 0.05 });
+  of.bb(5.3, 0.22, 5.1, M(C.navy, { r: 0.5 }), 0, FL + 3.2, 0, { r: 0.08 });
   of.box(0.06, 1.0, 3.4, gl, -2.52, FL + 1.85, 0.2, { r: 0.02 });
   of.box(3.6, 1.0, 0.06, gl, -0.2, FL + 1.85, 2.42, { r: 0.02 });
   of.bb(0.06, 2.1, 0.9, M(C.blue, { r: 0.6 }), -2.52, FL, -1.75, { r: 0.02 });
@@ -716,7 +647,7 @@ function buildInterior() {
 
 /* ---------------- fence, gates ---------------- */
 function buildFence() {
-  const P = new Parts(), post = M(C.anth, { r: 0.6 }), rail = M(0x39434a, { r: 0.6 }), mesh = M(0x3a4a47, { op: 0.32, r: 0.8 });
+  const P = new Parts(), post = M(0xc9d0d7, { r: 0.6 }), rail = M(0xc9d0d7, { r: 0.6 }), mesh = M(0x9aa6b2, { op: 0.22, r: 0.8 });
   const runs = [[-40, 18.5, 40, 18.5], [-47.5, -39.5, 47.5, -39.5], [-47.5, -39.5, -47.5, 18.5], [47.5, -39.5, 47.5, 18.5]];
   for (const [ax, az, bx, bz] of runs) {
     const len = Math.hypot(bx - ax, bz - az), n = Math.ceil(len / 2.6), hor = az === bz;
@@ -726,11 +657,11 @@ function buildFence() {
     P.box(hor ? len : 0.02, 1.75, hor ? 0.02 : len, mesh, mx, 1.08, mz, { r: 0.008 });
   }
   // gate posts and parked sliding gate leaves
-  for (const x of [-47.5, -40, 40, 47.5]) P.bb(0.32, 2.5, 0.32, M(C.anth, { r: 0.5 }), x, 0, 18.5, { r: 0.08 });
+  for (const x of [-47.5, -40, 40, 47.5]) P.bb(0.42, 2.6, 0.42, M(C.white, { r: 0.5 }), x, 0, 18.5, { r: 0.16, seg: 2 });
   for (const s of [-1, 1]) {
     P.box(5.6, 0.1, 0.08, M(C.yellow, { r: 0.6 }), s * 37.1, 1.9, 18.2, { r: 0.03 });
     P.box(5.6, 0.1, 0.08, M(C.yellow, { r: 0.6 }), s * 37.1, 0.32, 18.2, { r: 0.03 });
-    for (let k = 0; k < 9; k++) P.box(0.05, 1.58, 0.05, M(C.anth), s * (34.5 + k * 0.65), 1.11, 18.2, { r: 0.02 });
+    for (let k = 0; k < 9; k++) P.box(0.05, 1.58, 0.05, M(0xc9d0d7), s * (34.5 + k * 0.65), 1.11, 18.2, { r: 0.02 });
   }
   const g = P.build();
   return unit(g, 0.34, 'rise', 0.4, 3);
@@ -738,7 +669,7 @@ function buildFence() {
 function makeBarrier(px, pz, dir) {
   const root = new THREE.Group(); root.position.set(px, 0, pz);
   const P = new Parts();
-  P.bb(0.5, 1.05, 0.5, M(C.anth, { r: 0.5 }), 0, 0, 0, { r: 0.1 });
+  P.bb(0.55, 1.05, 0.55, M(C.white, { r: 0.5 }), 0, 0, 0, { r: 0.2, seg: 2 });
   P.bb(0.36, 0.3, 0.36, M(C.yellow, { r: 0.5 }), 0, 1.05, 0, { r: 0.08 });
   root.add(P.build());
   const arm = new THREE.Group(); arm.position.set(0, 1.12, 0); root.add(arm);
@@ -753,17 +684,17 @@ function makeBarrier(px, pz, dir) {
 function makeHouse(o) {
   const P = new Parts();
   const W = o.w, D = o.d, H = o.floors === 2 ? 5.5 : 3.1;
-  const wall = M(o.wall, { r: 0.92 }), roofM = M(o.roof, { r: 0.78 }), glass = M(0x3f5869, { r: 0.25, m: 0.1 }), frm = M(0xffffff, { r: 0.7 });
+  const wall = M(o.wall, { r: 0.92 }), roofM = M(o.roof, { r: 0.7 }), glass = M(C.glass, { r: 0.3 }), frm = M(0xffffff, { r: 0.7 });
   // lot
   P.box(o.lw, 0.14, o.ld, M(o.lawn ?? C.grass, { r: 0.95 }), 0, 0.07, 0, { r: 0.07 });
   P.box(1.1, 0.03, o.ld / 2 - D / 2 + 0.1, M(0xe7e3da, { r: 0.95 }), o.door, 0.155, D / 2 + (o.ld / 2 - D / 2) / 2, { r: 0.01 });
-  for (const s of [-1, 1]) P.bb(0.6, 0.9, o.ld - 1.2, M(0x7fb069, { r: 0.95 }), s * (o.lw / 2 - 0.4), 0.12, 0, { r: 0.25 });
-  P.bb(o.lw / 2 - 1.2, 0.85, 0.6, M(0x7fb069, { r: 0.95 }), -o.lw / 4 - 0.3, 0.12, o.ld / 2 - 0.4, { r: 0.25 });
-  P.bb(o.lw / 2 - 1.2, 0.85, 0.6, M(0x7fb069, { r: 0.95 }), o.lw / 4 + 0.3, 0.12, o.ld / 2 - 0.4, { r: 0.25 });
+  for (const s of [-1, 1]) P.bb(0.6, 0.9, o.ld - 1.2, M(0x8fcd78, { r: 0.95 }), s * (o.lw / 2 - 0.4), 0.12, 0, { r: 0.25 });
+  P.bb(o.lw / 2 - 1.2, 0.85, 0.6, M(0x8fcd78, { r: 0.95 }), -o.lw / 4 - 0.3, 0.12, o.ld / 2 - 0.4, { r: 0.25 });
+  P.bb(o.lw / 2 - 1.2, 0.85, 0.6, M(0x8fcd78, { r: 0.95 }), o.lw / 4 + 0.3, 0.12, o.ld / 2 - 0.4, { r: 0.25 });
   // house body
   const y0 = 0.14;
-  P.bb(W + 0.24, 0.42, D + 0.24, M(0xbcbdb6, { r: 0.9 }), 0, y0, 0, { r: 0.06 });
-  P.bb(W, H, D, wall, 0, y0 + 0.3, 0, { r: 0.12, seg: 2 });
+  P.bb(W + 0.24, 0.42, D + 0.24, M(0xdde1e6, { r: 0.9 }), 0, y0, 0, { r: 0.1 });
+  P.bb(W, H, D, wall, 0, y0 + 0.3, 0, { r: 0.28, seg: 3 });
   const top = y0 + 0.3 + H;
   const pitch = 0.62, k = Math.tan(pitch), a = D / Math.SQRT2;
   const pre = new THREE.Matrix4().makeScale(1, k, 1).multiply(new THREE.Matrix4().makeRotationX(PI / 4));
@@ -788,18 +719,18 @@ function makeHouse(o) {
     for (const x of [-W * 0.3, W * 0.3]) win(x, y, -D / 2 - 0.01, 'z');
     win(W / 2 + 0.01, y, 0, 'x'); win(-W / 2 - 0.01, y, 0, 'x');
   }
-  P.bb(1.0, 2.1, 0.08, M(o.doorC ?? 0x7a5236, { r: 0.7 }), o.door, y0 + 0.3, D / 2 + 0.02, { r: 0.03 });
-  P.box(1.6, 0.1, 1.0, M(C.anth, { r: 0.6 }), o.door, y0 + 2.6, D / 2 + 0.45, { r: 0.03 });
+  P.bb(1.0, 2.1, 0.08, M(o.doorC ?? C.navy, { r: 0.6 }), o.door, y0 + 0.3, D / 2 + 0.02, { r: 0.03 });
+  P.box(1.6, 0.14, 1.0, M(C.white, { r: 0.6 }), o.door, y0 + 2.6, D / 2 + 0.45, { r: 0.06 });
   const g = P.build();
   g.position.set(o.x, 0, o.z); g.rotation.y = o.ry ?? 0;
   return g;
 }
 
 const TREES = { list: [] };
-function tree(x, z, d, opt = {}) { TREES.list.push({ x, z, d, h: opt.h ?? (1.3 + d * 0.32), col: opt.col ?? pick([0x6fae55, 0x7dba5f, 0x5f9f4c, 0x8cc46a]), ph: rand() * TAU, ph2: rand() * TAU, top: opt.top ?? rand() < 0.45 }); }
+function tree(x, z, d, opt = {}) { TREES.list.push({ x, z, d, h: opt.h ?? (1.3 + d * 0.32), col: opt.col ?? pick([0x8fd07a, 0x80c86d, 0x9ad686, 0x76c064]), ph: rand() * TAU, ph2: rand() * TAU, top: opt.top ?? rand() < 0.45 }); }
 function buildTrees() {
   const n = TREES.list.length;
-  const trunk = new THREE.InstancedMesh(RB(0.32, 1, 0.32, 0.1, 1).clone().translate(0, 0.5, 0), M(0x8a6a4c, { r: 0.9 }), n);
+  const trunk = new THREE.InstancedMesh(RB(0.32, 1, 0.32, 0.1, 1).clone().translate(0, 0.5, 0), M(0xa07a58, { r: 0.9 }), n);
   const crown = new THREE.InstancedMesh(RB(1, 1, 1, 0.5, 3), M(0xffffff, { r: 0.92 }), n * 2);
   for (const im of [trunk, crown]) { im.castShadow = true; im.receiveShadow = true; im.frustumCulled = false; im.instanceMatrix.setUsage(THREE.DynamicDrawUsage); }
   let ci = 0;
@@ -833,8 +764,8 @@ function updateTrees(T, c) {
 
 function buildTown() {
   const grp = new THREE.Group();
-  const walls = [0xf5f0e6, 0xf7f6f1, 0xf2e3c6, 0xeee0d6, 0xe6ebe3, 0xf3ecd9];
-  const roofs = [0xc6543c, 0xb94a33, 0xcf6546, 0xbd5a3f];
+  const walls = [0xfafafa, 0xf7f5f1, 0xf6f3ea, 0xf1f4f7, 0xfbf8f2];
+  const roofs = [0xe0533f, 0xd84b38, 0xe8624d, 0xdc5a44];
   const houses = [
     { x: -46, z: 38.6, ry: PI, w: 8.2, d: 7, floors: 2 }, { x: -28.5, z: 38.6, ry: PI, w: 7.6, d: 6.6, floors: 1 },
     { x: -11, z: 38.6, ry: PI, w: 8.6, d: 7.2, floors: 2 }, { x: 7.5, z: 38.6, ry: PI, w: 7.4, d: 6.6, floors: 1 },
@@ -856,7 +787,7 @@ function buildTown() {
   });
   // fields north (crop rows)
   const F = new Parts();
-  const rows = [[0x8fc06e, 0x9fcb7c], [0xd9c977, 0xcfbd68], [0x7fb862, 0x8ec36f]];
+  const rows = [[0xb3dc9b, 0xc2e4ad], [0xeedf9f, 0xe6d58c], [0xa9d690, 0xbadfa3]];
   [[-20, 17.5], [-1.5, 18], [17.5, 18]].forEach(([x0, wdt], fi) => {
     for (let k = 0; k < 9; k++) F.box(wdt, 0.32, 0.8, M(rows[fi][k % 2], { r: 0.95 }), x0 + wdt / 2, 0.26, -51.6 + k * 1.12, { r: 0.14 });
   });
@@ -876,7 +807,7 @@ function buildTown() {
   // grass island with flags & company monolith
   const I = new Parts();
   I.box(20, 0.2, 6.6, M(C.grass, { r: 0.95 }), 7.5, 0.1, 12.2, { r: 0.1 });
-  I.bb(3.6, 2.2, 0.55, M(C.anth, { r: 0.55 }), 11.5, 0.2, 12.6, { r: 0.1 });
+  I.bb(3.6, 2.2, 0.6, M(C.navy, { r: 0.5 }), 11.5, 0.2, 12.6, { r: 0.22, seg: 2 });
   I.box(2.9, 0.22, 0.06, M(C.yellow), 11.5, 1.86, 12.9, { r: 0.03 });
   I.box(2.9, 0.22, 0.06, M(C.orange), 11.5, 1.5, 12.9, { r: 0.03 });
   I.box(2.9, 0.22, 0.06, M(C.blue), 11.5, 1.14, 12.9, { r: 0.03 });
@@ -885,13 +816,13 @@ function buildTown() {
   // gatehouse
   const Gh = new Parts();
   Gh.bb(3.0, 2.7, 3.0, M(0xf6f6f3, { r: 0.75 }), 0, 0.06, 0, { r: 0.12 });
-  Gh.box(3.06, 0.9, 3.06, M(0x2e4350, { r: 0.2 }), 0, 1.9, 0, { r: 0.04 });
-  Gh.bb(3.6, 0.2, 3.6, M(C.anth, { r: 0.6 }), 0, 2.76, 0, { r: 0.05 });
+  Gh.box(3.06, 0.9, 3.06, M(C.glass, { r: 0.3 }), 0, 1.9, 0, { r: 0.04 });
+  Gh.bb(3.6, 0.3, 3.6, M(C.white, { r: 0.6 }), 0, 2.76, 0, { r: 0.12 });
   Gh.box(3.2, 0.16, 0.05, M(C.blue), 0, 2.45, 1.53, { r: 0.02 });
   const gh = Gh.build(); gh.position.set(37.2, 0, 14.8);
   grp.add(unit(gh, 0.5, 'pop', 0.38));
   // street lamps + yard masts
-  const Lm = new Parts(), pole = M(C.anth, { r: 0.5 }), head = M(0xfff7e6, { e: 0xffe9b8, ei: 0.55 });
+  const Lm = new Parts(), pole = M(0xe4e8ec, { r: 0.5 }), head = M(0xfff7e6, { e: 0xffe9b8, ei: 0.55 });
   for (const x of [-54, -35, -18, -1, 16, 33, 54]) {
     Lm.bb(0.16, 6.2, 0.16, pole, x, 0.16, 21.4, { r: 0.05 });
     Lm.box(0.1, 0.1, 1.5, pole, x, 6.25, 22.1, { r: 0.03 });
@@ -923,8 +854,8 @@ function axle(r, w, zs, tyreM, rimM) {
   const P = new Parts(), hub = V(0x3b4448, { r: 0.7 });
   tyreM = V(tyreM.color.getHex(), { r: 0.78 }); rimM = V(rimM.color.getHex(), { r: 0.6 });
   for (const z of zs) {
-    P.box(2 * r, 2 * r, w, tyreM, 0, 0, z, { r: r * 0.42, seg: 2 });
-    P.box(2 * r, 2 * r, w, tyreM, 0, 0, z, { r: r * 0.42, seg: 2, rz: PI / 4 });
+    P.box(2 * r, 2 * r, w, tyreM, 0, 0, z, { r: r * 0.5, seg: 2 });
+    P.box(2 * r, 2 * r, w, tyreM, 0, 0, z, { r: r * 0.5, seg: 2, rz: PI / 4 });
     const sz = Math.sign(z) || 1, hz = z + sz * (w / 2 + 0.006);
     P.box(r * 1.05, r * 1.05, 0.04, rimM, 0, 0, hz, { r: 0.018 });
     P.box(r * 1.05, r * 1.05, 0.04, rimM, 0, 0, hz, { r: 0.018, rz: PI / 4 });
@@ -936,9 +867,9 @@ function axle(r, w, zs, tyreM, rimM) {
 const PLEATS = 14, CURT_X0 = 1.45, CURT_L = 13.3, PLEAT_W = CURT_L / PLEATS;
 function makeTruck(cab, opt = {}) {
   const tyre = V(C.tyre, { r: 0.9 }), rim = V(0xc9ced1, { r: 0.45, m: 0.35 }), dark = V(0x2a3135, { r: 0.7 }), alu = V(0xc9ced1, { r: 0.4, m: 0.4 });
-  const glass = V(0x22313a, { r: 0.22, m: 0.1 }), cabM = V(cab, { r: 0.5 }), body = V(0xf2f3f1, { r: 0.7 }), light = V(0xfff7e0, { e: 0xfff0c8, ei: 0.7 });
+  const glass = V(C.glass, { r: 0.25, m: 0.1 }), cabM = V(cab, { r: 0.5 }), body = V(0xf2f3f1, { r: 0.7 }), light = V(0xfff7e0, { e: 0xfff0c8, ei: 0.7 });
   const red = V(0xd5402e, { e: 0xc02414, ei: 0.55 }), amber = V(0xf3a21a, { e: 0xf09000, ei: 0.5 });
-  const canvasM = V(opt.canvas ?? 0xe3e7e8, { r: 0.93 }), bandM = V(opt.band ?? C.blue, { r: 0.85 }), stripeM = V(opt.stripe ?? C.orange, { r: 0.8 }), strapM = V(0x59646d, { r: 0.8 });
+  const canvasM = V(opt.canvas ?? 0xf3f5f7, { r: 0.93 }), bandM = V(opt.band ?? C.blue, { r: 0.85 }), stripeM = V(opt.stripe ?? C.orange, { r: 0.8 }), strapM = V(0x59646d, { r: 0.8 });
 
   /* tractor — origin: rear axle centre on the ground, +X forward */
   const tP = new Parts();
@@ -947,13 +878,13 @@ function makeTruck(cab, opt = {}) {
   tP.box(1.3, 0.12, 2.3, dark, -0.05, 1.12, 0, { r: 0.04 });
   tP.box(1.3, 0.56, 0.56, alu, 1.8, 0.86, -0.95, { r: 0.22, seg: 2 });
   tP.box(1.0, 0.46, 0.5, dark, 1.8, 0.84, 0.97, { r: 0.08 });
-  tP.box(2.3, 2.55, 2.45, cabM, 4.0, 2.28, 0, { r: 0.2, seg: 2 });
-  tP.box(1.75, 0.58, 2.3, cabM, 3.5, 3.78, 0, { r: 0.18, seg: 2, rz: -0.13 });
+  tP.box(2.3, 2.55, 2.45, cabM, 4.0, 2.28, 0, { r: 0.42, seg: 3 });
+  tP.box(1.75, 0.58, 2.3, cabM, 3.5, 3.76, 0, { r: 0.27, seg: 3, rz: -0.13 });
   tP.box(0.06, 1.0, 2.12, glass, 5.155, 2.88, 0, { r: 0.02 });
   for (const s of [-1, 1]) tP.box(0.9, 0.82, 0.04, glass, 4.55, 2.86, s * 1.228, { r: 0.015 });
   tP.box(0.07, 0.78, 1.5, dark, 5.155, 1.7, 0, { r: 0.03 });
   for (const y of [1.45, 1.7, 1.95]) tP.box(0.05, 0.06, 1.42, alu, 5.19, y, 0, { r: 0.02 });
-  tP.box(0.32, 0.48, 2.5, V(C.anth, { r: 0.6 }), 5.2, 0.8, 0, { r: 0.1 });
+  tP.box(0.36, 0.5, 2.5, V(0xd9dee4, { r: 0.6 }), 5.2, 0.8, 0, { r: 0.2, seg: 2 });
   for (const s of [-1, 1]) {
     tP.box(0.06, 0.18, 0.42, light, 5.36, 0.96, s * 0.86, { r: 0.02 });
     tP.box(0.06, 0.1, 0.18, amber, 5.36, 0.96, s * 1.14, { r: 0.02 });
@@ -1059,16 +990,16 @@ function setCurtain(tk, f) {
 
 function makeCar(color, kind = 'car') {
   const L = kind === 'van' ? 5.1 : 4.3, Wd = 1.8;
-  const P = new Parts(), paint = V(color, { r: 0.42, m: 0.1 }), glass = V(0x24333c, { r: 0.18, m: 0.1 }), dark = V(0x2a3135);
+  const P = new Parts(), paint = V(color, { r: 0.42, m: 0.1 }), glass = V(C.glass, { r: 0.25, m: 0.1 }), dark = V(0x2a3135);
   if (kind === 'van') {
-    P.box(L, 0.7, Wd, paint, 0, 0.72, 0, { r: 0.12, seg: 2 });
-    P.box(L * 0.74, 1.35, Wd - 0.04, paint, -L * 0.12, 1.72, 0, { r: 0.16, seg: 2 });
+    P.box(L, 0.78, Wd, paint, 0, 0.74, 0, { r: 0.28, seg: 3 });
+    P.box(L * 0.74, 1.4, Wd - 0.04, paint, -L * 0.12, 1.74, 0, { r: 0.3, seg: 3 });
     P.box(0.9, 0.6, Wd - 0.1, glass, L * 0.3, 1.5, 0, { r: 0.12, rz: -0.5 });
     P.box(0.5, 0.48, Wd + 0.02, glass, L * 0.18, 1.62, 0, { r: 0.04 });
   } else {
-    P.box(L, 0.62, Wd, paint, 0, 0.66, 0, { r: 0.16, seg: 2 });
-    P.box(L * 0.55, 0.5, Wd - 0.16, glass, -L * 0.06, 1.18, 0, { r: 0.14, seg: 2 });
-    P.box(L * 0.45, 0.1, Wd - 0.22, paint, -L * 0.08, 1.45, 0, { r: 0.05 });
+    P.box(L, 0.78, Wd, paint, 0, 0.72, 0, { r: 0.3, seg: 3 });
+    P.box(L * 0.58, 0.62, Wd - 0.12, glass, -L * 0.07, 1.33, 0, { r: 0.24, seg: 3 });
+    P.box(L * 0.5, 0.16, Wd - 0.2, paint, -L * 0.08, 1.66, 0, { r: 0.07, seg: 2 });
   }
   for (const s of [-1, 1]) {
     P.box(0.05, 0.12, 0.34, V(0xfff6dc, { e: 0xfff0c8, ei: 0.6 }), L / 2, 0.76, s * 0.6, { r: 0.02 });
@@ -1108,8 +1039,8 @@ function makeForklift() {
   const Y = V(C.yellow, { r: 0.55 }), D = V(C.anth, { r: 0.65 }), G = V(0x3b464c, { r: 0.55, m: 0.25 });
   const root = new THREE.Group();
   const P = new Parts();
-  P.box(1.75, 0.72, 1.1, Y, -0.8, 0.56, 0, { r: 0.14, seg: 2 });
-  P.box(0.55, 1.05, 1.14, Y, -1.78, 0.72, 0, { r: 0.22, seg: 2 });
+  P.box(1.75, 0.72, 1.1, Y, -0.8, 0.56, 0, { r: 0.24, seg: 3 });
+  P.box(0.55, 1.05, 1.14, Y, -1.78, 0.72, 0, { r: 0.26, seg: 3 });
   for (let k = 0; k < 5; k++) P.box(0.02, 0.2, 0.12, D, -2.06, 0.55, -0.4 + k * 0.2, { r: 0.008, rx: 0.6 });
   P.box(0.8, 0.22, 1.0, Y, -1.25, 1.0, 0, { r: 0.08 });
   P.box(0.7, 0.06, 1.0, D, -0.35, 0.95, 0, { r: 0.02 });
@@ -1433,13 +1364,13 @@ function updateFlags(c, k) {
 // fleet trucks (5 identical, royal-blue cabs)
 const fleet = [];
 for (let k = 0; k < 5; k++) {
-  const tk = makeTruck(C.blue, { pleats: true, load: true, canvas: 0xe3e7e8, band: C.blue, stripe: C.orange, cabStripe: C.yellow });
+  const tk = makeTruck(C.blue, { pleats: true, load: true, canvas: 0xf3f5f7, band: C.blue, stripe: C.orange, cabStripe: C.white });
   scene.add(tk.tractor, tk.trailer);
   fleet.push(tk);
 }
 // trucks waiting in P1 / P4 and a passing street truck, in other cab colours
 function parkTruck(tk, x, z, psi) { tk.tractor.position.set(x, Y0, z); tk.tractor.rotation.y = psi; tk.trailer.position.set(x, Y0, z); tk.trailer.rotation.y = psi; }
-const parkedA = makeTruck(0xb8433a, { canvas: 0xf0f0ed, band: 0xb8433a, stripe: 0x1c2326 });
+const parkedA = makeTruck(C.red, { canvas: 0xf6f6f4, band: C.red, stripe: C.navy });
 const parkedB = makeTruck(0xf1f1ec, { canvas: 0xdfe5ea, band: 0x5b7fa8, stripe: C.yellow, cabStripe: C.blue });
 parkTruck(parkedA, 26.0, -17.2, -HP); parkTruck(parkedB, 38.6, -17.2, -HP);
 for (const t of [parkedA, parkedB]) { scene.add(unit(t.tractor, 0.62, 'pop', 0.36), unit(t.trailer, 0.6, 'pop', 0.36)); }
@@ -1449,10 +1380,10 @@ scene.add(streetTruck.tractor, streetTruck.trailer);
 // street traffic — every vehicle repeats its path exactly every 10 s
 const TRAFFIC = [
   { lane: 1, v: 14.5, ph: 9.5, col: 0xf4f4f1 },
-  { lane: 1, v: 14.5, ph: 4.1, col: 0xb8433a },
+  { lane: 1, v: 14.5, ph: 4.1, col: C.red },
   { lane: 1, v: 14.5, ph: 1.8, col: 0xf4f4f1, kind: 'van' },
   { lane: 1, v: 14.5, ph: 7.2, truck: true },
-  { lane: -1, v: 14.5, ph: 5.0, col: 0x5b7fa8 },
+  { lane: -1, v: 14.5, ph: 5.0, col: C.navy },
 ];
 for (const tv of TRAFFIC) { if (!tv.truck) { tv.car = makeCar(tv.col, tv.kind); scene.add(tv.car.g); } }
 function trafficPose(tv, c) {
@@ -1460,8 +1391,20 @@ function trafficPose(tv, c) {
   const x = tv.lane > 0 ? -Lp / 2 + u : Lp / 2 - u;
   return { x, z: tv.lane > 0 ? 27.25 : 23.75, psi: tv.lane > 0 ? 0 : PI, s: u, Lp };
 }
+// company vans parked in the east front yard (with painted bays)
+{
+  const P = new Parts(), Wl = M(C.line, { r: 0.7 });
+  for (let i = 0; i <= 4; i++) P.box(0.14, 0.014, 5.4, Wl, 21.6 + i * 3.1, 0.07, 12.4, { r: 0.006 });
+  P.box(12.54, 0.014, 0.14, Wl, 27.8, 0.07, 9.7, { r: 0.006 });
+  scene.add(unit(P.build(), 0.3, 'pop', 0.3));
+  [0, 1, 3].forEach((i, n) => {
+    const v = makeCar(0xfafafa, 'van'); v.g.position.set(23.15 + i * 3.1, Y0, 12.6); v.g.rotation.y = HP;
+    const S = new Parts(); S.box(5.12, 0.22, 1.84, V(C.blue, { r: 0.5 }), 0, 1.02, 0, { r: 0.06 }); v.g.add(S.build());
+    scene.add(unit(v.g, 0.68 + n * 0.03, 'pop', 0.35));
+  });
+}
 // staff car park
-[[-29.8, 0x2f6db3], [-27, 0xc5cbce], [-21.3, 0xf4f4f1], [-18.4, 0x1c2326], [-12.7, 0xb8433a], [-9.9, 0xe9e2d0]].forEach(([x, c], i) => {
+[[-29.8, C.navy], [-27, 0xf4f4f1], [-21.3, 0xf4f4f1], [-18.4, 0x22262b], [-12.7, C.red], [-9.9, C.blue]].forEach(([x, c], i) => {
   const car = makeCar(c); car.g.position.set(x, Y0, 15.2); car.g.rotation.y = -HP; scene.add(unit(car.g, 0.66 + i * 0.02, 'pop', 0.35));
 });
 
@@ -1478,6 +1421,23 @@ const birds = [0, 1, 2].map(i => {
   P.box(0.5, 0.14, 0.16, m, 0, 0, 0, { r: 0.05 }); g.add(P.build());
   const wings = [-1, 1].map(s => { const w = new THREE.Group(); const wp = new Parts(); wp.box(0.22, 0.03, 0.7, m, 0, 0, s * 0.35, { r: 0.012 }); w.add(wp.build()); g.add(w); return w; });
   scene.add(g); return { g, wings, ph: i * TAU / 3 + 0.4, r: 24 + i * 3, y: 22 + i * 2.2 };
+});
+
+// floating map pins bobbing over the key spots (?pins=0 hides them)
+const PINS = (Q.get('pins') === '0' ? [] : [
+  { x: -12, y: 16.5, z: -19.5, col: C.navy },
+  { x: -1, y: 10.2, z: 0.8, col: C.red },
+  { x: 32.3, y: 8.6, z: -12.5, col: C.orange },
+]).map((p, i) => {
+  const g = new THREE.Group(), P = new Parts(), m = M(p.col, { r: 0.3, m: 0.05 });
+  P.box(1.8, 1.8, 1.8, m, 0, 0, 0, { r: 0.9, seg: 4 });
+  const pre = new THREE.Matrix4().makeRotationX(Math.atan(1 / Math.SQRT2)).multiply(new THREE.Matrix4().makeRotationZ(PI / 4));
+  P.box(1.05, 1.05, 1.05, m, 0, -0.95, 0, { r: 0.12, pre });
+  P.box(0.5, 0.5, 0.5, M(0xffffff, { r: 0.3 }), 0, 0.15, 0.62, { r: 0.25, seg: 3 });
+  g.add(P.build());
+  g.position.set(p.x, p.y, p.z);
+  scene.add(g);
+  return { g, ...p, ph: i * 2.1 };
 });
 
 /* =====================================================================
@@ -1567,12 +1527,17 @@ function updateWorld(T, c) {
     b.g.scale.setScalar(popK(T, 0.8, 0.3));
   });
   if (FAN) FAN.rotation.y = TAU * 3 * c;
+  PINS.forEach((p, i) => {
+    p.g.position.y = p.y + 0.4 * Math.sin(TAU * c / 2.5 + p.ph);
+    p.g.rotation.y = (i % 2 ? 1 : -1) * TAU * c / LOOP;
+    p.g.scale.setScalar(popK(T, 0.82 + i * 0.05, 0.4));
+  });
   updateFlags(c, popK(T, 0.55, 0.38));
   updateTrees(T, c);
 }
 
 /* ---------------- camera: eased orbit + gentle push-in, period 10 s ---------------- */
-const CAM = { az: 1.5, swing: 0.17, el: 0.63, dist: 300, push: 0.08, tx: -3, ty: 0, tz: -3 };
+const CAM = { az: 1.36, swing: 0.12, el: 0.72, dist: 160, push: 0.07, tx: 0, ty: 0, tz: -9.5 };
 function updateCamera(cc) {
   const ph = TAU * cc / LOOP;
   const az = CAM.az - CAM.swing * Math.cos(ph);
@@ -1582,27 +1547,7 @@ function updateCamera(cc) {
   camera.position.set(tx + d * Math.sin(az) * Math.cos(el), CAM.ty + d * Math.sin(el), tz + d * Math.cos(az) * Math.cos(el));
   camera.lookAt(tx, CAM.ty, tz);
 }
-camera.setViewOffset(900, 1600, 0, -1600 * 0.1, 900, 1600);
 
-/* ---------------- overlay counters (Croatian formatting) ---------------- */
-const fmt = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-const elCard = document.getElementById('card'), elPal = document.getElementById('vPal'), elTr = document.getElementById('vTr'), elRev = document.getElementById('vRev'), elBar = document.getElementById('bar'), elDot = document.getElementById('liveDot');
-const last = { pal: -1, tr: -1, rev: -1 };
-function bump(el) { el.animate([{ transform: 'scale(1.09)' }, { transform: 'scale(1)' }], { duration: 280, easing: 'cubic-bezier(.2,.8,.2,1)' }); }
-function updateOverlay(T, c) {
-  const k = clamp((T - 0.25) / 0.6);
-  elCard.style.opacity = String(eOut(k));
-  elCard.style.transform = `translateY(${(1 - eOut(k)) * -3}cqh) scale(${0.96 + 0.04 * eBack(k)})`;
-  const p = T < BUILD ? 0 : eSine(clamp((c - 0.2) / 9.3));
-  const pal = Math.round(1180 + (1512 - 1180) * p);
-  const tr = T < BUILD ? 0 : Math.min(9, Math.floor(Math.max(0, c - 0.25) / 1.0));
-  const rev = Math.round(912 * (T < BUILD ? 0 : clamp((c - 0.2) / 9.3)));
-  if (pal !== last.pal) { elPal.firstChild.nodeValue = fmt(pal); elBar.style.width = (pal / 1512 * 100).toFixed(2) + '%'; last.pal = pal; }
-  if (tr !== last.tr) { elTr.textContent = fmt(tr); if (last.tr >= 0 && tr > last.tr) bump(elTr); last.tr = tr; }
-  if (rev !== last.rev) { elRev.firstChild.nodeValue = fmt(rev) + ' '; last.rev = rev; }
-  const pulse = 0.5 + 0.5 * Math.cos(TAU * c / 1.25);
-  elDot.style.boxShadow = `0 0 0 ${(0.3 + 0.9 * (1 - pulse)).toFixed(2)}cqw rgba(242,183,5,${(0.15 + 0.35 * pulse).toFixed(2)})`;
-}
 
 /* ---------------- main loop ---------------- */
 function renderAt(T) {
@@ -1611,7 +1556,6 @@ function renderAt(T) {
   for (const ip of [ipBase, ...ipLoad]) ip.update(T);
   updateWorld(T, c);
   updateCamera(T - BUILD);
-  updateOverlay(T, c);
   composer.render();
 }
 resize();
